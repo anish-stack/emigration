@@ -137,11 +137,9 @@ exports.CreateEmigration = async (req, res) => {
         // Save the emigration record to the database
         await emigration.save();
         // res.redirect('/)
-        // Redirect to success page
-        res.redirect('https://demoemmigration.netlify.app/success');
+        res.status(201).json({ message: "Emigration record created successfully", emigration });
     } catch (error) {
         console.error("Error processing request:", error);
-        // res.status(500).json({ error: "Internal server error" });
-        res.redirect('https://demoemmigration.netlify.app/error');
+        res.status(500).json({ error: "Internal server error" });
     }
 };

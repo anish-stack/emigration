@@ -14,9 +14,7 @@ const Port = process.env.PORT || 3000;
 //middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({
-    origin: ['https://emigration.onrender.com','demoemmigration.netlify.app','https://demoemmigration.netlify.app/','www.demoemmigration.netlify.app'],
-  }));
+app.use(cors());
 
 // Create 'files' directory if it doesn't exist
 const directory = './files';
