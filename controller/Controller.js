@@ -143,3 +143,98 @@ exports.CreateEmigration = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
+
+exports.getAllEmigration = async (req, res) => {
+    try {
+        const emigrations = await Emigration.find();
+        res.status(200).json(emigrations);
+    } catch (error) {
+        console.error("Error fetching emigrations:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+exports.singleEmigration = async (req, res) => {
+    try {
+        const emigration = await Emigration.findById(req.params.id);
+        if (!emigration) {
+            return res.status(404).json({ error: "Emigration not found" });
+        }
+        res.status(200).json(emigration);
+    } catch (error) {
+        console.error("Error fetching emigration:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+exports.deleteEmigration = async (req, res) => {
+    try {
+        const emigration = await Emigration.findByIdAndDelete(req.params.id);
+        if (!emigration) {
+            return res.status(404).json({ error: "Emigration not found" });
+        }
+        res.status(200).json({ message: "Emigration deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting emigration:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+const fs = require('fs');
+const path = require('path');
+const ExcelJS = require('exceljs');
+const cron = require('node-cron');
+exports.downloadEmigration = async (req, res) => {
+    try {
+        // Fetch emigration data from the database
+        const emigrations = await Emigration.find();
+
+        // Create a new workbook
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Emigration Data');
+
+        // Add headers
+        worksheet.addRow([
+            'SurName', 'GivenName', 'Nationality', 'DOB', 'Address', 'State', 'Pincode', 'PhoneNumber',
+            'PassportNumber', 'CountryOfPassport', 'ExpiryDate', 'TypeOfVisa', 'issuedDateType', 'CompanyName',
+            'UicNo', 'PassportUrl', 'PhotoUrl', 'PanCardUrl'
+        ]);
+
+        // Add data rows
+        emigrations.forEach((emigration) => {
+            worksheet.addRow([
+                emigration.surName, emigration.GivenName, emigration.Nationality, emigration.DOB, emigration.Address,
+                emigration.State, emigration.Pincode, emigration.PhoneNumber, emigration.PassportNumber,
+                emigration.CountryOfPassport, emigration.ExpiryDate, emigration.TypeOfVisa, emigration.issuedDateType,
+                emigration.CompanyName, emigration.UicNo, emigration.PassportUrl, emigration.PhotoUrl, emigration.PanCardUrl
+            ]);
+        });
+
+        // Set response headers
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename="emigration_data.xlsx"');
+
+        // Write workbook to response
+        await workbook.xlsx.write(res);
+
+        // End response
+        res.end();
+    } catch (error) {
+        console.error("Error downloading emigration data:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+cron.schedule('0 0 * * *', async () => {
+    try {
+        // Calculate the date 30 days ago
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        // Find and delete emigration records older than 30 days
+        const result = await Emigration.deleteMany({ createdAt: { $lt: thirtyDaysAgo } });
+
+        console.log(`Deleted ${result.deletedCount} emigration records older than 30 days.`);
+    } catch (error) {
+        console.error('Error deleting emigration records:', error);
+    }
+});
