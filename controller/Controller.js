@@ -136,7 +136,7 @@ exports.CreateEmigration = async (req, res) => {
             console.log(emigration)
         // Save the emigration record to the database
         await emigration.save();
-
+        // res.redirect('/)
         res.status(201).json({ message: "Emigration record created successfully", emigration });
     } catch (error) {
         console.error("Error processing request:", error);
