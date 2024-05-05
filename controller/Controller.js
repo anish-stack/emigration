@@ -25,7 +25,7 @@ function generateUIC() {
 exports.CreateEmigration = async (req, res) => {
     console.log("i am hit",req.body)
     try {
-        const { salutation, validityDate, surName, GivenName, Nationality, DOB, Address, State, Pincode, PhoneNumber, PassportNumber, CountryOfPassport, ExpiryDate, TypeOfVisa, issuedDateType, CompanyName } = req.body;
+        const { salutation, validityDate, surName, GivenName,VisaStatus, Nationality, DOB, Address, State, Pincode, PhoneNumber, PassportNumber, CountryOfPassport, ExpiryDate, TypeOfVisa, issuedDateType, CompanyName } = req.body;
 
         const emptyFields = [];
 
@@ -85,22 +85,27 @@ exports.CreateEmigration = async (req, res) => {
             return res.status(400).json({ error: `Empty fields: ${emptyFields.join(', ')}` });
         }
 
+        console.log(req.files)
         const passportImage = req.files['passportImage'] ? req.files['passportImage'][0] : undefined;
         const panCardImage = req.files['panCardImage'] ? req.files['panCardImage'][0] : undefined;
+        const VisaAttached = req.files['VisaAttached'] ? req.files['VisaAttached'][0] : undefined;
+
         const photo = req.files['photo'] ? req.files['photo'][0] : undefined;
 
         // Check if any of the files are undefined
-        if (!passportImage || !panCardImage || !photo) {
+        if (!passportImage || !panCardImage || !photo || !VisaAttached) {
             return res.status(400).json({ error: "One or more files are missing" });
         }
 
-        let passportResult, panCardResult, photoResult;
+        let passportResult, panCardResult, photoResult,VisaResult;
 
         try {
             // Upload files to Cloudinary
             passportResult = await cloudinary.uploader.upload(passportImage.path, { folder: "passport_images" });
             panCardResult = await cloudinary.uploader.upload(panCardImage.path, { folder: "pan_card_images" });
             photoResult = await cloudinary.uploader.upload(photo.path, { folder: "profile_photos" });
+            VisaResult = await cloudinary.uploader.upload(VisaAttached.path, { folder: "VisaAttached" });
+
         
             // Proceed with saving URLs to the database
         } catch (error) {
@@ -128,6 +133,8 @@ exports.CreateEmigration = async (req, res) => {
             issuedDate: issuedDateType ? new Date() : null,
             CompanyName,
             UicNo: generateUIC(),
+            VisaStatus,
+            VisaAttached :VisaResult.secure_url,
             PassportUrl: passportResult.secure_url,
             PanCardUrl: panCardResult.secure_url,
             PhotoUrl: photoResult.secure_url

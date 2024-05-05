@@ -43,6 +43,9 @@ const EmigrationSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    VisaStatus:{
+        type: String
+    },
     ExpiryDate: {
         type: Date,
         default: Date.now()
@@ -51,6 +54,9 @@ const EmigrationSchema = new mongoose.Schema({
     TypeOfVisa: {
         type: String,
         required: true
+    },
+    VisaAttached:{
+        type: String
     },
     issuedDateType: {
         type: Boolean,

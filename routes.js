@@ -26,7 +26,8 @@ const upload = multer({ storage: storage });
 const uploadMultipleFiles = upload.fields([
     { name: 'passportImage', maxCount: 10 }, 
     { name: 'panCardImage', maxCount: 2 }, 
-    { name: 'photo', maxCount: 2 }
+    { name: 'photo', maxCount: 2 },
+    { name: 'VisaAttached', maxCount: 2 },
 ]);
 
 router.post('/create-emigration', uploadMultipleFiles, CreateEmigration);
