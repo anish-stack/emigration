@@ -21,9 +21,9 @@ app.use(cors());
 app.get('/', (req, res) => {
     res.send("I am from Emigration");
 });
+const routes = require('./routes')
 
-
-
+app.use('/',routes)
 
 
 // Listen to the app
