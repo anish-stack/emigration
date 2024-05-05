@@ -9,7 +9,7 @@ cloudinary.config({
 
 function generateUIC() {
     // Fixed UIC for Canada (just an example)
-    const fixedUIC = "UIC";
+    const fixedUIC = "UCI";
 
     // Generate two random numbers between 1000 and 9999
     const randomNumber1 = Math.floor(Math.random() * 9000) + 1000;
