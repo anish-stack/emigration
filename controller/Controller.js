@@ -203,8 +203,8 @@ exports.downloadEmigration = async (req, res) => {
         // Add headers
         worksheet.addRow([
             'SurName', 'GivenName', 'Nationality', 'DOB', 'Address', 'State', 'Pincode', 'PhoneNumber',
-            'PassportNumber', 'CountryOfPassport', 'ExpiryDate', 'TypeOfVisa', 'issuedDateType', 'CompanyName',
-            'UicNo', 'PassportUrl', 'PhotoUrl', 'PanCardUrl'
+            'PassportNumber', 'CountryOfPassport', 'ExpiryDate', 'TypeOfVisa','VisaStatus', 'issuedDateType', 'CompanyName',
+            'UicNo', 'PassportUrl', 'PhotoUrl', 'Visa-Approval-Letter','Visa-Attached-passport',
         ]);
 
         // Add data rows
@@ -212,8 +212,8 @@ exports.downloadEmigration = async (req, res) => {
             worksheet.addRow([
                 emigration.surName, emigration.GivenName, emigration.Nationality, emigration.DOB, emigration.Address,
                 emigration.State, emigration.Pincode, emigration.PhoneNumber, emigration.PassportNumber,
-                emigration.CountryOfPassport, emigration.ExpiryDate, emigration.TypeOfVisa, emigration.issuedDateType,
-                emigration.CompanyName, emigration.UicNo, emigration.PassportUrl, emigration.PhotoUrl, emigration.PanCardUrl
+                emigration.CountryOfPassport, emigration.ExpiryDate, emigration.TypeOfVisa,emigration.VisaStatus, emigration.issuedDateType,,
+                emigration.CompanyName, emigration.UicNo, emigration.PassportUrl, emigration.PhotoUrl, emigration.PanCardUrl,emigration.VisaAttached
             ]);
         });
 
