@@ -3,7 +3,7 @@ const multer = require('multer');
 const fs = require('fs');
 const express = require('express');
 const router = express.Router();
-const { CreateEmigration, getAllEmigration, singleEmigration, deleteEmigration, downloadEmigration } = require('./controller/Controller'); // Import your controller functions
+const { CreateEmigration, getAllEmigration, singleEmigration, deleteEmigration,findByUciNumber, downloadEmigration } = require('./controller/Controller'); // Import your controller functions
 // Create 'files' directory if it doesn't exist
 const directory = './files';
 if (!fs.existsSync(directory)) {
@@ -35,5 +35,7 @@ router.get('/get-emigration', getAllEmigration);
 router.get('/get-single-emigration/:id', singleEmigration);
 router.delete('/delete-emigration/:id', deleteEmigration);
 router.get('/download-emigration', downloadEmigration);
+router.get('/get-emigration-by-uci/:uci', findByUciNumber);
+
 
 module.exports = router;

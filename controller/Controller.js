@@ -151,6 +151,32 @@ exports.CreateEmigration = async (req, res) => {
     }
 };
 
+exports.findByUciNumber = async (req, res) => {
+    try {
+        const uciNumber = req.params.uci;
+        console.log(uciNumber)
+        const findData = await Emigration.find({ UicNo: uciNumber });
+        if (findData.length === 0) {
+            return res.status(404).json({
+                success: false,
+                msg: "No Data Found"
+            });
+        }
+        res.status(200).json({
+            success: true,
+            msg: "Data found",
+            data: findData
+        });
+    } catch (error) {
+        res.status(501).json({
+            success: false,
+            msg: "Internal Server Error"
+        });
+        console.log(error);
+    }
+};
+
+
 exports.getAllEmigration = async (req, res) => {
     try {
         const emigrations = await Emigration.find();
@@ -191,6 +217,7 @@ const fs = require('fs');
 const path = require('path');
 const ExcelJS = require('exceljs');
 const cron = require('node-cron');
+
 exports.downloadEmigration = async (req, res) => {
     try {
         // Fetch emigration data from the database
